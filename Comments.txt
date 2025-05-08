@@ -1,0 +1,118 @@
+THIS DOCUMENT IS ALL OF MY IN THE MOMENT COMMENTS IN MARKDOWN AND CODE COMMENTS THROUGHOUT THE PROJECT IN THE PYNOTEBOOK:
+
+
+
+
+The best with each split for neuron numbers for each layer: [10], [25], [50], [100], [10, 10], [25, 25], [50, 50], [25, 25, 25]:
+50/50 split: Overall best for everything: [10,10], Overall second best for everything: [25, 25, 25]
+55/45 split: Overall third best for everything: [25, 25, 25]
+60/40 split: [25]
+65/35 split: [25, 25, 25]
+70/30 split: [100]
+75/25 split: Overall fourth best for everything: [10]
+
+I do not plan on running that many options at once anymore, it took over 3 hours to run the code, I will be more optimized with it later.
+
+However, here I am just putting the information I gained from it.
+
+I will focus on three or more layers splits, as that tends to be the mode of top values.  I will focus on different numbers of neurons.
+
+I originally forgot to implement early stopping, which is probably why this took so long, however I also will take the train test splitting
+process out of the model creation, and after completing a few more small tests just choose the best train test split from our options.
+
+
+
+The same best model parameters as before gave us a mean squared error of ~10950.77 with a random seed of 42
+The original mean squared error for the original model is ~9219.05
+The mean squared error for our model of 4 layers of 50 neurons on the 75/25 split is ~13300.97, which is best in this case, with a random seed of 42
+The second best is our model of 3 layers of 100 neurons on the 75/25 split has mean squared error of ~15302.05
+The third best is very bad, but is again on the 75/25 split.
+
+
+
+This adds a random seed cv aspect to the grid search with no split in order to get multiple models with the same parameters,
+and I changed the patience of early stopping to 10 instead of 5, because it was always ending way too early.
+
+
+
+This code ran much much faster for 8 models it only took less than 6 minutes, however, none of the models are that great.
+
+The best is:
+With a seed of 61: ~11278.00 MSE for [200, 100, 50, 25]
+Second best is: ~14436.42 MSE for [100, 100, 100, 100]
+Third best is: ~16720.52 MSE for [50, 50, 50, 50]
+Other seed was bad for all models
+
+
+
+To be completely honest, I believe my PC might just be burnt out with this last answer.  I've been running it at full power for around 12 or more hours, so I think it made it mistake, since clearly the index which minimizes the loss is 11, not 5.
+
+
+
+With the previous test I was able to find our best model yet with a MSE of ~9352.20, with a seed of 72
+
+
+
+
+In this previous test I was able to see that even with the same random seed, the model does not work the same.  The same random seed and the same parameters before gave us ~9352.20 MSE on test set, this time it gave us ~10017.89 MSE.  So I will hopefully be able to export the original model to a file.
+
+Also, using sigmoid at all made the models perform much much worse, and also using any droppout made the models much much worse, so it seems like I'm sticking with the original model.
+
+Next I plan to implement XG boosting to test it against the RNN model.
+
+
+
+I realized while running this on a single XG boost model that it takes an extremely long time to run.  My cpu was having trouble, so I went into google Colab and ran the code, first for 100 estimators, then when that took too long as well, I just ran it for 1 estimator.  From what it looks like, it takes apprioximately 3 or so minutes to run for a single estimator with maximum depth of 10, so it will take quite a while to run, but I plan to test it with 3, 5, and 10 estimators, and maximum depths of 10, 15, and 25, and also with the eta of 0.1, 0.3, and 0.05.  This will take an extremely long time to run, so I'll do only a few at a time and get rid of lower performing parameters as I continue.  I will also start using Google Colab to run my code, instead of my cpu, and then I will export and import the model into this document, rather than running it here. 
+
+
+
+I first ran a single xgboost with parameters 10, 15, and 0.1 respectively, which had the best error so far with ~6971.42 MSE, however then I ran the above code on Google Colab for a grid search and it took 4 hours and 48 minutes to run, and it found the best model by far so far with ~2878.04 MSE.  I will export that from colab and import it here, HOWEVER, I plan to adjust the code by standardizing the y variables in order to optimize performance, and instead of being approximately $53 off of each day open and close for each stock, I want to use a minmax scalar for each stock from 0 to 1, based solely on their stock minimum and maximum overall, then fit the thing total, so for example if the minimum value of the aapl stock is 1 cent, the maximum value is $800, and for tsla the minimum is $50 and maximum is $750, then we transform 0.01 to approximately 0, and 800 to approximately 1 for apple, and then similarly 50 and 750 to 0 and 1, and basically fit each variable on it's own.  That way if we have a mse of approximately 0.0004 (completely arbitray example) then it would only be off by 2% rather than being off by $53, which is a much bigger deal for one stock than the other.
+
+The learning rate of 0.3 was by far the best in all cases, which is surprising, the model did not care how much depth really if there was 10 regressors, it was almost the same, with the MSE's between 10, 15, and 25 with 0.3 learning rate all within 0.03 of each other.
+
+And now after saving the models, Google Colab has deleted the files, so I am dying inside, since it took over 4 hours and 48 minutes to complete the grid search.  Thankfully, I wrote here which parameters I used though.  So I am just recreating those three models, but they might not be as good as before.
+
+
+
+I used the above code in Google Colab and found a MSE of ~2679.61, which is again, the best we've had, but it also used 15 estimators, instead of 10, so maybe scaling improved it, maybe the increase in estimators improved it.
+
+For the last model I am going to attempt to do a seasonal split on the data and try to recursive calls of prediction over the course of the following 10 days, as well as use y to only include Open and Close data in order to fit the trend analysis on just those two variables for each dataset with all of the test days and all of the test days
+
+
+
+The Exponential smoothing model had a MSE ~93581.24, so it was extremely horrible, with an average of being $305.91 off each value, however, I see that what happened was it was just using seasonal data, This was with seasonal_periods = 4, and I think it was just repeating the same 4 values over and over again.  It was because it had no trend component, now I added multiplicative trend and it gave MSE ~2399045.19, so way worse.
+
+Using additive trend and no season it was still worse than literally repeating the same 4 days over and over again with MSE ~306425.54
+
+Usng additive trend and multiplicative seasonal with 250 day period gives MSE ~418609.53
+
+Using additive for both gave ~305751.05
+
+Using additive for both with damped trend gave ~89457.80
+
+Normalizing the data with Boxcox and the same parameters as before gave ~226738.89
+I tried using the MinMaxScaler then fitting the data and computing the inverse transformed exponential smoothing we get, but it was giving me an error that the test data did not have the correct dimensions, which did not make sense.  I think the issue was that I was fitting it on the train data, which had a different number of datapoints as the test data, but for some reason the scaler transform outputs a matrix with shape (len, None), whereas it takes in with shape (1, len), so it wasn't possible to inverse_transform properly.
+
+So overall, the Exponential smoothing forecasting was TERRIBLE!!!
+
+
+
+So there was an issue with loading the model, because apparently when loading the model from keras, it forgets that tensorflow exists altogether
+and so even with the proposed online solution, which works for everybody else, it will not perform any calculations on my model because it has a
+Lambda layer with a tensorflow function in it, and keras's load_model aspects just won't work with non builtin functions, so I would need to run
+the code again, which for some reason even with the same seed does not give the same model, so the best RNN model is virtually lost forever,
+however it was not the best model of them all anyway, so I'm glad I was able to beat it with an XGBoost model.
+
+
+
+I also just realized that in my previous analysis when doing the exponential smoothing I was using the wrong value for the MSE
+I was accidentally adding the MSE of the 10 variables together, but forgetting to divide by 10, after correcting this, it is much more reasonable
+and is actually slightly better than the RNN that I made anyway.
+
+
+
+This analysis shows that the best model for five of the most popular tech stock prices is the Scaled XG Boost algorithm on 15 estimators, maximum depth of 25, with a learning rate of 0.3.  I believe that if I used 1000 estimators it could have been much much better, however, since it takes approximately 1.5 to 5 minutes to run each estimator depending on the hyperparameters, then it could be said to run for at least 25 hours straight, for which I do not have the cpu power, nor the google colab ability to run the code for that long to train the xg boost algorithm, in addition, with that many estimators, it could potentially overfit the training data, and be useless anyway.
+
+
+
+The analysis shows that the average dollar amount wrong in the prediction is approximately $50 off the correct price, based on MSE.  Also, the way I predicted was by using the previous 100 days of data from all 5 variables inside each of the 5 datasets, and tried to predict specifically the Open and Close values for the following 14 days on the 5 datasets.

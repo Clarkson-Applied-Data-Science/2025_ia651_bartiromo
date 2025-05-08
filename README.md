@@ -1,4 +1,14 @@
 # 2025_ia651_bartiromo
+
+Ethan Bartiromo 03/25/2025-05/07/2025
+IA651 taught by Professor Michael Gilbert
+Stock Market Open/Close Prediction on 5 of the top tech stocks.
+Necessary documents to read:
+README.md
+Ethan_Bartiromo_Final.ipynb
+Comments.txt
+
+
 * Created the GitHub and started project - 03/25/2025
 * Found and uploaded datasets to work on - 03/25/2025
 * Had first project meeting - 03/26/2025
@@ -30,3 +40,38 @@
 * Started transforming data with MinMaxScaler in order to fit on percentages of change between min and max instead of $ value - 04/22/2025
 * Had issues with the MinMaxScaler, made a plan to observe and fix - 04/22/2025
 * Updated README and uploaded pickl files to project folder as well as pushing and committing to GitHub - 04/22/2025
+* Completed the XGBoost analysis, and found the best model thus far again - 04/26/2025
+* Started Seasonal Decompose model analysis - 04/26/2025
+* Completed Seasonal Decompose (Which ended up just being Exponential Smooting) which did VERY poorly - 05/01/2025
+* Uploaded everything into a final pynotebook - 05/07/2025
+* Noticed that loading a keras model with a lambda layer does not work properly - 05/07/2025
+* Uploaded the Google CoLab pynotebook as supplementary details - 05/07/2025
+* Created a bar chart showing the mean squared error of each model - 05/07/2025
+* Fixed MSE calculation for the Exponential Smoothing - 05/07/2025
+* Created Comments.txt - 05/07/2025
+* Added file descriptions below - 05/07/2025
+* Added Title sequence up top - 05/07/2025
+* Committed and pushed to GitHub, zipped, and turned in to Moodle - 05/07/2025
+
+
+Files included in Folder:
+* AAPL.csv - Dataset 1/5
+* GOOGL.csv - Dataset 2/5
+* META.csv - Dataset 3/5
+* NVDA.csv - Dataset 4/5
+* TSLA.csv - Dataset 5/5
+* .gitignore - Python Notebook Github command
+* my_model_1.keras - Model 1/6 (Corrupted)
+* model_2.pkl - Model 2/6
+* model_3.pkl - Model 3/6
+* model_4.pkl - Model 4/6
+* model_5.pkl - Model 5/6 (Model 6 is not saved as it's own file)
+* Ethan_Bartiromo.ipynb - Original PyNotebook (Where all of the original coding and editing takes place)
+* AML_COLAB.ipynb - Google CoLab supplimentary PyNotebook (Where some of the excess model training took place)
+* Ethan_Bartiromo_Final.ipynb - The final product showing the graph of MSEs for each of the 6 models
+* Comments.txt - A copy of the comments made on model design throughout the process of the project
+* README.md - The readme consisting of all of this documentation
+
+
+
+THANK YOU FOR THE WONDERFUL CLASS THIS SEMESTER!
